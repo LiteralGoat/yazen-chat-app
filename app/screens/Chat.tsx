@@ -1,7 +1,6 @@
 import { View, Text, TextInput, StyleSheet, FlatList, KeyboardAvoidingView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Timestamp, addDoc, collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore'
-import 'firebase/firestore'
 import { FIREBASE_DB } from '../../firebaseConfig'
 import { useHeaderHeight } from '@react-navigation/elements'
 
@@ -9,11 +8,20 @@ const firestoreQuery = (queryLimit: number) => {
   return query(collection(FIREBASE_DB, 'messages'), orderBy('createdAt', 'desc'), limit(queryLimit))
 }
 
+interface Message {
+  text: string,
+  createdAt: any,
+  authorUid: string,
+  authorName: string
+}
+
+// TODO: find react-navigation route type
 const Chat = ({ route }: any) => {
   const keyboardOffset = useHeaderHeight()
   
-  const [messages, setMessages] = useState<any[]>([])
+  const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, changeNewMessage] = useState<string>('')
+  // TODO: find type for fiestore ref
   const [lastMessageRef, setLastMessageRef] = useState<any>(null)
 
   const sendMessage = () => {
@@ -31,8 +39,10 @@ const Chat = ({ route }: any) => {
     if (!lastMessageRef) return
     const olderMessagesQuery = query(collection(FIREBASE_DB, 'messages'), orderBy('createdAt', 'desc'), startAfter(lastMessageRef), limit(25))
     getDocs(olderMessagesQuery).then(snapshot => {
-      let olderMessages: any[] = []
+      let olderMessages: Message[] = []
       snapshot.forEach((message) => {
+        // TODO: fix typing
+        // @ts-ignore
         olderMessages.push(message.data())
       })
 
@@ -46,14 +56,18 @@ const Chat = ({ route }: any) => {
     onSnapshot(firestoreQuery(1), {
       next: (snapshot) => {
         if (messages) {
-          setMessages(currentMessages => [snapshot.docs[0].data(), ...currentMessages])
+          // TODO: fix typing
+          // @ts-ignore
+          setMessages((currentMessages): Message[] => [snapshot.docs[0].data(), ...currentMessages])
         }
       }
     })
     if (!messages.length) {
       getDocs(firestoreQuery(25)).then(snapshot => {
-        let newMessages: any[] = []
+        let newMessages: Message[] = []
         snapshot.forEach((message) => {
+          // TODO: fix typing
+          // @ts-ignore
           newMessages.push(message.data())
         })
 
@@ -74,7 +88,7 @@ const Chat = ({ route }: any) => {
               <Text>{item.text}</Text>
             </View>
           )}
-          keyExtractor={(item, index) => item + index}
+          keyExtractor={(item, index) => item.authorUid + index}
           inverted={true}
           onEndReached = {loadOlderMessages}
         />

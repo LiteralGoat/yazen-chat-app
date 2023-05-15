@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, Button } from 'react-native'
+import { View, Text, TextInput, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import { getAuth, signInAnonymously } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
@@ -6,6 +6,7 @@ import { FIREBASE_DB } from '../../firebaseConfig'
 import LoginIllustration from '../components/LoginIllustration'
 import { Margin } from '../components/helpers'
 
+// TODO: find typing for navigation
 const Login = ({ navigation }: any) => {
   const auth = getAuth()
 
