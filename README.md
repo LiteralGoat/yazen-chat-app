@@ -1,3 +1,17 @@
+# Up and running
+1. Clone the repository
+````
+git clone git@github.com:LiteralGoat/yazen-chat-app.git
+````
+3. Install dependencies
+````
+npm i
+````
+3. Start the app
+````
+npm start
+````
+
 # Yazen Code Test - Chat App
 Project description:
 
